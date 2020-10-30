@@ -1,0 +1,12 @@
+*.log
+*.pyc
+.cache/
+.coverage
+.idea/
+.vscode/
+replace_background_all_docs.egg-info/
+build/
+dist/
+docs/build/
+venv/
+wheelhouse/
