@@ -1,12 +1,12 @@
 """ Replace background with the official of the company.
 """
 
-from System.IO.Path import Combine
-import System.Runtime.InteropServices as SRI
-from System import Console
-import System
 import sys
 import clr
+import System
+from System import Console
+from System.IO.Path import Combine
+import System.Runtime.InteropServices as SRI
 import replace
 
 clr.AddReference("System")
@@ -25,18 +25,6 @@ def prompt_exit():
     sys.exit()
 
 
-def confirmation(func):
-    response = raw_input(
-        """Would you like to update the background, (Press y/[Y] to proceed.):\n>""")
-    if response.lower() in ["y"]:
-        func()
-        prompt_exit()
-    elif response in ["*"]:
-        func()
-    else:
-        sys.exit()
-
-
 def raw_input(message):
     Console.WriteLine(message)
     return Console.ReadLine()
@@ -47,8 +35,9 @@ def username():
 
 
 def main():
-
+    """User can choose to update on draft or many in same time"""
     try:
+        # Connection to the application, only one session should be opened here.
         application = SRI.Marshal.GetActiveObject("SolidEdge.Application")
         response = raw_input(
             """Would you like to update the background, (Press y/[Y] to proceed.):\n"(Option: Press '*' for processing documents in batch)""")
@@ -56,6 +45,7 @@ def main():
         if response.lower() in ["y", "yes"]:
             doc = application.ActiveDocument
             replace.background(doc)
+
         elif response.lower() in ["*"]:
             # loop through all the drafts
             documents = application.Documents

@@ -32,40 +32,34 @@ def replace_background(doc, template_path):
 
 def background(doc):
     """
-    replace background in one draft.
+    replace background in one draft only.
+    and only if there is at least one view in the document.
     """
     if doc.Name.lower().endswith(".dft"):
-                    print("Document name: %s" % doc.Name)
-                    try:
-                        if doc.ModelLinks.Count != 0:
-                            # check if there is drawings on the draft.
-                            model_links = [
-                                link.FileName for link in doc.ModelLinks]
-                            assert (
-                                len(model_links) == 1
-                            ), "This doc has different model links."
-                            item_type = get_category(model_links).lower()
-                            print("CAD type: %s" % item_type)
-                        elif doc.ModelLinks.Count == 0:
-                            # if there is not drawings inserted then
-                            # we cannot identify the background to insert.
-                            # so the app skip it.
-                            item_type = ".pneu"
-                            pass
+        print("Document name: %s" % doc.Name)
+        try:
+            if doc.ModelLinks.Count != 0:
+                # check if there is drawings on the draft.
+                model_links = [link.FileName for link in doc.ModelLinks]
+                assert len(model_links) == 1, "This doc has different model links."
+                item_type = get_category(model_links).lower()
+                print("CAD type: %s" % item_type)
+            elif doc.ModelLinks.Count == 0:
+                # if there is not drawings inserted then
+                # we cannot identify the type of cad and therefore the correct background to insert.
+                # so the app will skip it.
+                item_type = ".pneu"
 
-                    except AssertionError as err:
-                        print(err.args)
-                    except Exception as ex:
-                        print(ex.args)
-                    else:
-                        if item_type in [".par", ".psm"]:
-                            replace_background(
-                                doc, combine(template_path, PART))
-                        elif item_type in [".asm"]:
-                            replace_background(
-                                doc, combine(template_path, ASSEMBLY))
-                        elif item_type in [".pneu"]:
-                            print(
-                                "No views inside this draft, background can't be changed.")
-                        else:
-                            print("document unknown.")
+        except AssertionError as err:
+            print(err.args)
+        except Exception as ex:
+            print(ex.args)
+        else:
+            if item_type in [".par", ".psm"]:
+                replace_background(doc, combine(template_path, PART))
+            elif item_type in [".asm"]:
+                replace_background(doc, combine(template_path, ASSEMBLY))
+            elif item_type in [".pneu"]:
+                print("No views inside this draft, background can't be changed.")
+            else:
+                print("document unknown.")
